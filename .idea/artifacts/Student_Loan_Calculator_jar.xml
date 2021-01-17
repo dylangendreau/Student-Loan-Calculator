@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="Student Loan Calculator:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/Student_Loan_Calculator_jar</output-path>
+    <root id="archive" name="Student Loan Calculator.jar">
+      <element id="module-output" name="Student Loan Calculator" />
+    </root>
+  </artifact>
+</component>

@@ -1,4 +1,4 @@
-/**
+/*
  * Program Name: D_G_LoanPayable.java
  * Purpose: An interface that holds a double for the annual rate and one abstract method called calculateLoanPayment(). 
  * 			Any class that implements this interface must fulfill the contract and implement the method.

@@ -1,4 +1,4 @@
-/**
+/*
  * Program Name: Student.java
  * Purpose: An aggregate class that holds objects that are instantiated in the StudentLoanApp class.
  * 			These objects are stored in an ArrayList structure. 

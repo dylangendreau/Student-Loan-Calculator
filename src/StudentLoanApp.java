@@ -1,15 +1,16 @@
-/**
- * Program Name: StudentLoanApp.java
- * Purpose: A GUI application that is used to calculate a students monthly loan payments, overall payments and total interest.
- * 			This is used to see how modifying payment schedules will affect the loan costs.
- * Name: Dylan Gendreau
- * Date: Apr 13, 2020
+/*
+  Program Name: StudentLoanApp.java
+  Purpose: A GUI application that is used to calculate a students monthly loan payments, overall payments and total interest.
+  			This is used to see how modifying payment schedules will affect the loan costs.
+  Name: Dylan Gendreau
+  Date: Apr 13, 2020
  */
 
 import java.util.ArrayList;
 import java.text.DecimalFormat;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.Objects;
 import javax.swing.*;
 public class StudentLoanApp extends JFrame {
     // Class wide scope data members
@@ -21,10 +22,7 @@ public class StudentLoanApp extends JFrame {
     private JSpinner intRateSpinner, amortPeriodSpinner;
     private JTextArea studentForm;
     private final DecimalFormat df2 = new DecimalFormat("#,##0.00");
-    private int studentIndex = 0, amortPeriod = 0;
-    private final double CSL_INT_RATE = 2.5, OSL_INT_RATE = 1.0;
-    private double intRate = 0, cslLoan = 0, oslLoan = 0, cslPayment = 0, oslPayment = 0, totalMonthlyPayment = 0,
-            totalBorrowed = 0, totalPayment = 0, totalIntPaid = 0, monthlyIntRate = 0;
+    private int studentIndex = 0;
     private JTextField studentNumTxtFld, surnameTxtFld, middleNameTxtFld, firstNameTxtFld, aptNumTxtFld, streetNumTxtFld,
             streetNameTxtFld, cityTxtFld, postalCodeTxtFld, cslTxtFld, oslTxtFld, cslPaymentTxtFld,
             oslPaymentTxtFld, totalMonthlyPaymentTxtFld, totalBorrowedTxtFld, totalPaymentTxtFld, totalIntTxtFld;
@@ -178,7 +176,7 @@ public class StudentLoanApp extends JFrame {
         c.gridx = 0;
         c.gridy = 9;
         studentPnl.add(provinceLbl, c);
-        provinceBox = new JComboBox<String>(provinces);
+        provinceBox = new JComboBox<>(provinces);
         c.gridx = 1;
         c.gridy = 9;
         studentPnl.add(provinceBox, c);
@@ -395,6 +393,8 @@ public class StudentLoanApp extends JFrame {
         public void actionPerformed(ActionEvent ev) {
             Student student = null;
             boolean duplicate = false;
+            double CSL_INT_RATE = 2.5;
+            double OSL_INT_RATE = 1.0;
             switch(ev.getActionCommand()) {
                 // Submit Button
                 case "Submit":
@@ -450,7 +450,7 @@ public class StudentLoanApp extends JFrame {
                     try {
                         student = new Student(studentNumTxtFld.getText(), surnameTxtFld.getText(), middleNameTxtFld.getText(),
                                 firstNameTxtFld.getText(), aptNumTxtFld.getText(), streetNumTxtFld.getText(),
-                                streetNameTxtFld.getText(), cityTxtFld.getText(), provinceBox.getSelectedItem().toString(),
+                                streetNameTxtFld.getText(), cityTxtFld.getText(), Objects.requireNonNull(provinceBox.getSelectedItem()).toString(),
                                 postalCodeTxtFld.getText(), Double.parseDouble(cslTxtFld.getText()),
                                 Double.parseDouble(oslTxtFld.getText()));
                     }
@@ -565,13 +565,13 @@ public class StudentLoanApp extends JFrame {
                         erasePaymentInfo();
                         studentInfo.remove(studentIndex);
                     }
-                    else if (studentIndex == 0 && studentInfo.size() == 1) {
+                    else if (studentInfo.size() == 1) {
                         studentForm.setText("");
                         eraseStudentInfo();
                         erasePaymentInfo();
                         studentInfo.remove(studentIndex);
                     }
-                    else if (studentIndex == 0 && studentInfo.size() != 0) {
+                    else {
                         studentForm.setText(studentInfo.get(studentIndex + 1).toString());
                         setStudentInfo(studentIndex + 1);
                         erasePaymentInfo();
@@ -613,8 +613,8 @@ public class StudentLoanApp extends JFrame {
                     // Checking for negative values
                     // (NOTE FOR BILL: The spinners minimum values are 0, so the exception will never be thrown.
                     // If you would like to test it, go to line 291 and 302, and change the second value to a negative.)
-                    amortPeriod = (int)amortPeriodSpinner.getValue();
-                    intRate = (double)intRateSpinner.getValue();
+                    int amortPeriod = (int) amortPeriodSpinner.getValue();
+                    double intRate = (double) intRateSpinner.getValue();
                     try {
                         if (intRate < 0)
                             throw new D_G_NegativeValueException(intRate);
@@ -639,32 +639,32 @@ public class StudentLoanApp extends JFrame {
                     }
 
                     // CSL Monthly Payment
-                    cslLoan = studentInfo.get(studentIndex).getCslLoanAmount();
-                    monthlyIntRate = (intRate + CSL_INT_RATE) * (ANNUAL_RATE_TO_MONTHLY_RATE);
-                    cslPayment = calculateLoanPayment(cslLoan, monthlyIntRate, amortPeriod);
-                    cslPaymentTxtFld.setText("$" + String.valueOf(df2.format(cslPayment)));
+                    double cslLoan = studentInfo.get(studentIndex).getCslLoanAmount();
+                    double monthlyIntRate = (intRate + CSL_INT_RATE) * (ANNUAL_RATE_TO_MONTHLY_RATE);
+                    double cslPayment = calculateLoanPayment(cslLoan, monthlyIntRate, amortPeriod);
+                    cslPaymentTxtFld.setText("$" + df2.format(cslPayment));
 
                     // OSL Monthly Payment
-                    oslLoan = studentInfo.get(studentIndex).getOslLoanAmount();
+                    double oslLoan = studentInfo.get(studentIndex).getOslLoanAmount();
                     monthlyIntRate = (intRate + OSL_INT_RATE) * (ANNUAL_RATE_TO_MONTHLY_RATE);
-                    oslPayment = calculateLoanPayment(oslLoan, monthlyIntRate, amortPeriod);
-                    oslPaymentTxtFld.setText("$" + String.valueOf(df2.format(oslPayment)));
+                    double oslPayment = calculateLoanPayment(oslLoan, monthlyIntRate, amortPeriod);
+                    oslPaymentTxtFld.setText("$" + df2.format(oslPayment));
 
                     // Total Monthly Payment
-                    totalMonthlyPayment = cslPayment + oslPayment;
-                    totalMonthlyPaymentTxtFld.setText("$" + String.valueOf(df2.format(totalMonthlyPayment)));
+                    double totalMonthlyPayment = cslPayment + oslPayment;
+                    totalMonthlyPaymentTxtFld.setText("$" + df2.format(totalMonthlyPayment));
 
                     // Total Amount Borrowed
-                    totalBorrowed = (cslLoan + oslLoan);
-                    totalBorrowedTxtFld.setText("$" + String.valueOf(df2.format(totalBorrowed)));
+                    double totalBorrowed = (cslLoan + oslLoan);
+                    totalBorrowedTxtFld.setText("$" + df2.format(totalBorrowed));
 
                     // Total Payment
-                    totalPayment = (cslPayment + oslPayment) * amortPeriod;
-                    totalPaymentTxtFld.setText("$" + String.valueOf(df2.format(totalPayment)));
+                    double totalPayment = (cslPayment + oslPayment) * amortPeriod;
+                    totalPaymentTxtFld.setText("$" + df2.format(totalPayment));
 
                     // Total Interest Paid
-                    totalIntPaid = totalPayment - (cslLoan + oslLoan);
-                    totalIntTxtFld.setText("$" + String.valueOf(df2.format(totalIntPaid)));
+                    double totalIntPaid = totalPayment - (cslLoan + oslLoan);
+                    totalIntTxtFld.setText("$" + df2.format(totalIntPaid));
 
                     // Set Student Information -- Done just in case clear was clicked
                     setStudentInfo(studentIndex);

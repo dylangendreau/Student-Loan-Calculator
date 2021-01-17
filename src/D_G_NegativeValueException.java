@@ -1,4 +1,4 @@
-/**
+/*
  * Program Name: D_G_NegativeValueException.java
  * Purpose: An exception class that checks to see whether a value is negative or not.
  * Name: Dylan Gendreau

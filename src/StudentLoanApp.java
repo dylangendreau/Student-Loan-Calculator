@@ -23,7 +23,7 @@ public class StudentLoanApp extends JFrame {
     private JTextArea studentForm;
     private final DecimalFormat df2 = new DecimalFormat("#,##0.00");
     private int studentIndex = 0;
-    private JTextField studentNumTxtFld, surnameTxtFld, middleNameTxtFld, firstNameTxtFld, aptNumTxtFld, streetNumTxtFld,
+    private JTextField studentNumTxtFld, firstNameTxtFld, middleNameTxtFld, surnameTxtFld, aptNumTxtFld, streetNumTxtFld,
             streetNameTxtFld, cityTxtFld, postalCodeTxtFld, cslTxtFld, oslTxtFld, cslPaymentTxtFld,
             oslPaymentTxtFld, totalMonthlyPaymentTxtFld, totalBorrowedTxtFld, totalPaymentTxtFld, totalIntTxtFld;
     private final String[] provinces = {"Alberta", "British Columbia", "Manitoba", "New Brunswick",
@@ -40,6 +40,7 @@ public class StudentLoanApp extends JFrame {
         this.setSize(675, 550);
         this.setLocationRelativeTo(null);
         this.setLayout(new BorderLayout());
+        this.setResizable(false);
 
         // Student Loan Application Information
         JLabel appInfoLbl = new JLabel("This is Dylan Gendreau's Student Loan Calculator", SwingConstants.CENTER);
@@ -101,15 +102,15 @@ public class StudentLoanApp extends JFrame {
         c.gridy = 1;
         studentPnl.add(studentNumTxtFld, c);
 
-        // Surname
-        JLabel surnameLbl = new JLabel("Last Name ", SwingConstants.RIGHT);
+        // First Name
+        JLabel firstNameLbl = new JLabel("First Name ", SwingConstants.RIGHT);
         c.gridx = 0;
         c.gridy = 2;
-        studentPnl.add(surnameLbl, c);
-        surnameTxtFld = new JTextField();
+        studentPnl.add(firstNameLbl, c);
+        firstNameTxtFld = new JTextField();
         c.gridx = 1;
         c.gridy = 2;
-        studentPnl.add(surnameTxtFld, c);
+        studentPnl.add(firstNameTxtFld, c);
 
         // Middle Name
         JLabel middleNameLbl = new JLabel("Middle Name ", SwingConstants.RIGHT);
@@ -121,15 +122,15 @@ public class StudentLoanApp extends JFrame {
         c.gridy = 3;
         studentPnl.add(middleNameTxtFld, c);
 
-        // First Name
-        JLabel firstNameLbl = new JLabel("First Name ", SwingConstants.RIGHT);
+        // Last Name
+        JLabel surnameLbl = new JLabel("Last Name ", SwingConstants.RIGHT);
         c.gridx = 0;
         c.gridy = 4;
-        studentPnl.add(firstNameLbl, c);
-        firstNameTxtFld = new JTextField();
+        studentPnl.add(surnameLbl, c);
+        surnameTxtFld = new JTextField();
         c.gridx = 1;
         c.gridy = 4;
-        studentPnl.add(firstNameTxtFld, c);
+        studentPnl.add(surnameTxtFld, c);
 
         // Apartment Number
         JLabel aptNumLbl = new JLabel("Apt. Number ", SwingConstants.RIGHT);
@@ -352,29 +353,29 @@ public class StudentLoanApp extends JFrame {
         c.gridy = 10;
         studentRepaymentFormPnl.add(totalBorrowedTxtFld, c);
 
-        // Total Payment Label and Text Field
-        JLabel totalPaymentLbl = new JLabel("Total Payment ");
-        c.gridx = 0;
-        c.gridy = 11;
-        studentRepaymentFormPnl.add(totalPaymentLbl, c);
-        totalPaymentTxtFld = new JTextField("");
-        totalPaymentTxtFld.setBackground(Color.WHITE);
-        totalPaymentTxtFld.setEditable(false);
-        c.gridx = 1;
-        c.gridy = 11;
-        studentRepaymentFormPnl.add(totalPaymentTxtFld, c);
-
         // Total Interest Label and Text Field
         JLabel totalIntLbl = new JLabel("Total Interest ");
         c.gridx = 0;
-        c.gridy = 12;
+        c.gridy = 11;
         studentRepaymentFormPnl.add(totalIntLbl, c);
         totalIntTxtFld = new JTextField("");
         totalIntTxtFld.setBackground(Color.WHITE);
         totalIntTxtFld.setEditable(false);
         c.gridx = 1;
-        c.gridy = 12;
+        c.gridy = 11;
         studentRepaymentFormPnl.add(totalIntTxtFld, c);
+
+        // Total Payment Label and Text Field
+        JLabel totalPaymentLbl = new JLabel("Total Payment ");
+        c.gridx = 0;
+        c.gridy = 12;
+        studentRepaymentFormPnl.add(totalPaymentLbl, c);
+        totalPaymentTxtFld = new JTextField("");
+        totalPaymentTxtFld.setBackground(Color.WHITE);
+        totalPaymentTxtFld.setEditable(false);
+        c.gridx = 1;
+        c.gridy = 12;
+        studentRepaymentFormPnl.add(totalPaymentTxtFld, c);
 
         // Calculate Button
         calculateBtn = new JButton("Calculate");
@@ -393,9 +394,9 @@ public class StudentLoanApp extends JFrame {
         public void actionPerformed(ActionEvent ev) {
             Student student = null;
             boolean duplicate = false;
-            double CSL_INT_RATE = 2.5;
-            double OSL_INT_RATE = 1.0;
-            switch(ev.getActionCommand()) {
+            final double CSL_INT_RATE = 2.5;
+            final double OSL_INT_RATE = 1.0;
+            switch (ev.getActionCommand()) {
                 // Submit Button
                 case "Submit":
 					/*Checking to see if student is already in the system based on student ID and name.
@@ -403,10 +404,7 @@ public class StudentLoanApp extends JFrame {
 					  This is in place so there are no duplicate students and CSL and OSL loan amounts can be updated easily.*/
                     if (studentInfo.size() > 0) {
                         for (int i = 0; i < studentInfo.size(); i++) {
-                            if (studentNumTxtFld.getText().equals(studentInfo.get(i).getStudentID()) &&
-                                    surnameTxtFld.getText().equals(studentInfo.get(i).getSurname()) &&
-                                    middleNameTxtFld.getText().equals(studentInfo.get(i).getMiddleName()) &&
-                                    firstNameTxtFld.getText().equals(studentInfo.get(i).getFirstName())) {
+                            if (studentNumTxtFld.getText().equals(studentInfo.get(i).getStudentID())) {
                                 int result = JOptionPane.showConfirmDialog(thisContentPane,
                                         "You are about to replace this student, do you want to proceed?",
                                         "Duplicate Student",
@@ -446,13 +444,20 @@ public class StudentLoanApp extends JFrame {
                         break;
                     }
 
+                    if (firstNameTxtFld.getText().isEmpty() || surnameTxtFld.getText().isEmpty()) {
+                        JOptionPane.showMessageDialog(thisContentPane,
+                                "First name or last name fields can't be empty.",
+                                "Empty Field",
+                                JOptionPane.ERROR_MESSAGE);
+                        break;
+                    }
+
                     // Storing student information into student object
                     try {
-                        student = new Student(studentNumTxtFld.getText(), surnameTxtFld.getText(), middleNameTxtFld.getText(),
-                                firstNameTxtFld.getText(), aptNumTxtFld.getText(), streetNumTxtFld.getText(),
+                        student = new Student(studentNumTxtFld.getText(), firstNameTxtFld.getText(), middleNameTxtFld.getText(),
+                                surnameTxtFld.getText(), aptNumTxtFld.getText(), streetNumTxtFld.getText(),
                                 streetNameTxtFld.getText(), cityTxtFld.getText(), Objects.requireNonNull(provinceBox.getSelectedItem()).toString(),
-                                postalCodeTxtFld.getText(), Double.parseDouble(cslTxtFld.getText()),
-                                Double.parseDouble(oslTxtFld.getText()));
+                                postalCodeTxtFld.getText(), Double.parseDouble(cslTxtFld.getText()), Double.parseDouble(oslTxtFld.getText()));
                     }
                     // Making sure CSL and OSL inputs are numbers
                     catch (NumberFormatException ex) {
@@ -464,31 +469,12 @@ public class StudentLoanApp extends JFrame {
                     }
                     // Making sure CSL and OSL loan amounts are a positive number
                     catch (D_G_NegativeValueException ex) {
-                        if (Double.parseDouble(cslTxtFld.getText()) < 0.0) {
+                        if (Double.parseDouble(cslTxtFld.getText()) < 0.0 || Double.parseDouble(oslTxtFld.getText()) < 0.0) {
                             JOptionPane.showMessageDialog(thisContentPane,
-                                    "CSL loan amount can't be a negative value. Your input will be converted to a positive value.",
+                                    "CSL or OSL loan amount can't be a negative value.",
                                     "Negative Value",
                                     JOptionPane.ERROR_MESSAGE);
-                            // Changing negative to positive
-                            cslTxtFld.setText(String.valueOf(Double.parseDouble(cslTxtFld.getText())*-1));
-                        }
-                        if (Double.parseDouble(oslTxtFld.getText()) < 0.0) {
-                            JOptionPane.showMessageDialog(thisContentPane,
-                                    "OSL loan amount can't be a negative value. Your input will be converted to a positive value.",
-                                    "Negative Value",
-                                    JOptionPane.ERROR_MESSAGE);
-                            // Changing negative to positive
-                            oslTxtFld.setText(String.valueOf(Double.parseDouble(oslTxtFld.getText())*-1));
-                        }
-                        // Proceed to re-input data into Student object
-                        try {
-                            student = new Student(studentNumTxtFld.getText(), surnameTxtFld.getText(), middleNameTxtFld.getText(),
-                                    firstNameTxtFld.getText(), aptNumTxtFld.getText(), streetNumTxtFld.getText(),
-                                    streetNameTxtFld.getText(), cityTxtFld.getText(), provinceBox.getSelectedItem().toString(),
-                                    postalCodeTxtFld.getText(), Double.parseDouble(cslTxtFld.getText()),
-                                    Double.parseDouble(oslTxtFld.getText()));
-                        } catch (NumberFormatException | D_G_NegativeValueException e) {
-                            e.printStackTrace();
+                            break;
                         }
                     }
 
@@ -557,6 +543,15 @@ public class StudentLoanApp extends JFrame {
                                 JOptionPane.ERROR_MESSAGE);
                         break;
                     }
+                    else {
+                        int result = JOptionPane.showConfirmDialog(thisContentPane,
+                                "You are about to delete this student, do you want to proceed?",
+                                "Delete Student",
+                                JOptionPane.YES_NO_OPTION,
+                                JOptionPane.WARNING_MESSAGE);
+                        if (result == JOptionPane.NO_OPTION)
+                            break;
+                    }
 
                     // Proceed to remove if there are students in the arraylist
                     if (studentIndex != 0) {
@@ -592,6 +587,17 @@ public class StudentLoanApp extends JFrame {
                                 JOptionPane.ERROR_MESSAGE);
                         break;
                     }
+                    else {
+                        int result = JOptionPane.showConfirmDialog(thisContentPane,
+                                "You are about to delete ALL students, do you want to proceed?",
+                                "Delete All Students",
+                                JOptionPane.YES_NO_OPTION,
+                                JOptionPane.WARNING_MESSAGE);
+                        if (result == JOptionPane.NO_OPTION)
+                            break;
+                    }
+
+                    // Proceed to remove all students
                     studentInfo.clear();
                     studentForm.setText("");
                     studentIndex = studentInfo.size();
@@ -610,33 +616,9 @@ public class StudentLoanApp extends JFrame {
                         break;
                     }
 
-                    // Checking for negative values
-                    // (NOTE FOR BILL: The spinners minimum values are 0, so the exception will never be thrown.
-                    // If you would like to test it, go to line 291 and 302, and change the second value to a negative.)
+                    // Spinner Values
                     int amortPeriod = (int) amortPeriodSpinner.getValue();
                     double intRate = (double) intRateSpinner.getValue();
-                    try {
-                        if (intRate < 0)
-                            throw new D_G_NegativeValueException(intRate);
-                    }
-                    catch (D_G_NegativeValueException ex) {
-                        JOptionPane.showMessageDialog(thisContentPane,
-                                "The interest rate can't be a negative value. Your input will be converted to a positive value.",
-                                "Negative Value",
-                                JOptionPane.ERROR_MESSAGE);
-                        intRate *= -1;
-                    }
-                    try {
-                        if (amortPeriod < 0)
-                            throw new D_G_NegativeValueException(amortPeriod);
-                    }
-                    catch (D_G_NegativeValueException ex) {
-                        JOptionPane.showMessageDialog(thisContentPane,
-                                "The amortization period can't be a negative value. Your input will be converted to a positive value.",
-                                "Negative Value",
-                                JOptionPane.ERROR_MESSAGE);
-                        amortPeriod *= -1;
-                    }
 
                     // CSL Monthly Payment
                     double cslLoan = studentInfo.get(studentIndex).getCslLoanAmount();
@@ -681,9 +663,9 @@ public class StudentLoanApp extends JFrame {
         public void setStudentInfo(int index) {
             studentForm.setText(studentInfo.get(index).toString());
             studentNumTxtFld.setText(studentInfo.get(index).getStudentID());
-            surnameTxtFld.setText(studentInfo.get(index).getSurname());
-            middleNameTxtFld.setText(studentInfo.get(index).getMiddleName());
             firstNameTxtFld.setText(studentInfo.get(index).getFirstName());
+            middleNameTxtFld.setText(studentInfo.get(index).getMiddleName());
+            surnameTxtFld.setText(studentInfo.get(index).getSurname());
             aptNumTxtFld.setText(studentInfo.get(index).getAptNumber());
             streetNumTxtFld.setText(studentInfo.get(index).getStreetNumber());
             streetNameTxtFld.setText(studentInfo.get(index).getStreetName());
@@ -702,9 +684,9 @@ public class StudentLoanApp extends JFrame {
          */
         public void eraseStudentInfo() {
             studentNumTxtFld.setText("");
-            surnameTxtFld.setText("");
-            middleNameTxtFld.setText("");
             firstNameTxtFld.setText("");
+            middleNameTxtFld.setText("");
+            surnameTxtFld.setText("");
             aptNumTxtFld.setText("");
             streetNumTxtFld.setText("");
             streetNameTxtFld.setText("");
